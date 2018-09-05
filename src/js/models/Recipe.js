@@ -32,7 +32,7 @@ export default class Recipe {
     }
 
     parseIngredients() {
-        const unitsLong = ['tablespoons', 'tablespoon', 'ounce', 'ounces', 'teaspoon', 'teaspoons', 'cups', 'pounds'];
+        const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds'];
         const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'pound'];
 
         const newIngredients = this.ingredients.map(el => {
@@ -44,11 +44,48 @@ export default class Recipe {
             })
 
             // Remove parentheses
-            ingredient = ingredient.replace(/ *\([^)]*\) */g, '');
+            ingredient = ingredient.replace(/ *\([^)]*\) */g, ' ');
 
             // Parse ingredients into count, unit and ingredients
+            const arrIngredients = ingredient.split(' ');
+            const unitIndex = arrIngredients.findIndex(el2 => unitsShort.includes(el2));
 
-            return ingredient;
+            let objIngredients;
+
+            if(unitIndex > -1) {
+                // There is a unit
+                const arrCount = arrIngredients.slice(0, unitIndex);
+                let count;
+
+                if(arrCount.length === 1) {
+                    count = eval(arrIngredients[0].replace('-', '+'));
+                } else {
+                    // Calculate the value from the string
+                    count = eval(arrIngredients.slice(0, unitIndex).join('+'));
+                }
+
+                objIngredients = {
+                    count,
+                    unit: arrIngredients[unitIndex],
+                    ingredient: arrIngredients.slice(unitIndex + 1).join(' ')
+                };
+            } else if(parseInt(arrIngredients[0], 10)) {
+                // There is no unit, but the 1st element is number
+                objIngredients = {
+                    count: parseInt(arrIngredients[0], 10),
+                    unit: '',
+                    ingredient: arrIngredients.slice(1).join(' ')
+                };
+            } else if(unitIndex === -1) {
+                // There is no unit, and no number in the 1st position
+                objIngredients = {
+                    count: 1,
+                    unit: '',
+                    ingredient
+                };
+            }
+
+            return objIngredients;
         });
 
         this.ingredients = newIngredients;
