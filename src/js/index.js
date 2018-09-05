@@ -66,16 +66,20 @@ const controlRecipe = async () => {
         // Create new recipe object
         state.recipe = new Recipe(id);
 
-        // Get recipe data
-        await state.recipe.getRecipe();
+        try {
+            // Get recipe data
+            await state.recipe.getRecipe();
 
-        // Calculate servings and time
-        state.recipe.calcTime();
-        state.recipe.calcServings();
+            // Calculate servings and time
+            state.recipe.calcTime();
+            state.recipe.calcServings();
 
-        // Render recipe
-        console.log(state.recipe);
+            // Render recipe
+            console.log(state.recipe);
+        } catch(error) {
+            console.log('Error processing recipe!');
+        }
     }
 };
 
-['hashchange', 'load'].forEach(window.addEventListener(event, controlRecipe));
+['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
