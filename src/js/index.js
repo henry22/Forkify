@@ -14,6 +14,7 @@ import { elements, renderLoader, clearLoader } from './views/base';
  * - Liked object
  */
 const state = {};
+window.state = state;
 
 /**
  * SEARCH CONTROLLER
@@ -126,6 +127,11 @@ elements.shoppingList.addEventListener('click', e => {
 
         // Delete the UI
         listView.deleteItem(id);
+
+    // Handle the update count
+    } else if(e.target.matches('.shopping__count-value')) {
+        const val = parseFloat(e.target.value, 10);
+        state.list.updateCount(id, val);
     }
 });
 
