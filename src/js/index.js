@@ -4,6 +4,7 @@ import Recipe from './models/Recipe';
 import List from './models/List';
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
+import * as listView from './views/listView';
 import { elements, renderLoader, clearLoader } from './views/base';
 
 /** Global state of the app
@@ -106,9 +107,11 @@ const controlList = () => {
     // Create a new list if there is none yet
     if(!state.list) state.list = new List();
 
-    // Add each ingredient to the list
+    // Add each ingredient to the list and UI
     state.recipe.ingredients.forEach(el => {
         const item = state.list.addItem(el.count, el.unit, el.ingrdient);
+
+        listView.renderItem(item);
     });
 };
 
